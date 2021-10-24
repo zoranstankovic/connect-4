@@ -1,4 +1,6 @@
 import random
+import os
+import json
 
 
 def main():
@@ -25,6 +27,8 @@ def main():
     position = None
     player = players[active_player_index]
 
+    show_leaderboard()
+
     # UNTIL SOMEONE WINS
     while not find_winner(board, token, position):
         player = players[active_player_index]
@@ -45,6 +49,7 @@ def main():
     print(f"GAME OVER! {player} has won with the board: ")
     show_board(board)
     print()
+    record_win(player)
 
 
 def find_winner(board, token, position):
@@ -219,6 +224,47 @@ def get_players():
     p2 = input('Please enter the name of Player 2: ')
 
     return p1, p2
+
+
+def show_leaderboard():
+    leaders = load_leaders()
+
+    sorted_leaders = list(leaders.items())
+    sorted_leaders.sort(key=lambda l: l[1], reverse=True)
+
+    print()
+    print("---------------------------")
+    print("LEADERS:")
+    for name, wins in sorted_leaders[0:5]:
+        print(f"{wins:,} -- {name}")
+    print("---------------------------")
+    print()
+
+
+def load_leaders():
+    directory = os.path.dirname(__file__)
+    filename = os.path.join(directory, 'leaderboard.json')
+
+    if not os.path.exists(filename):
+        return {}
+
+    with open(filename, 'r', encoding='utf-8') as fin:
+        return json.load(fin)
+
+
+def record_win(winner_name):
+    leaders = load_leaders()
+
+    if winner_name in leaders:
+        leaders[winner_name] += 1
+    else:
+        leaders[winner_name] = 1
+
+    directory = os.path.dirname(__file__)
+    filename = os.path.join(directory, 'leaderboard.json')
+
+    with open(filename, 'w', encoding='utf-8') as fout:
+        json.dump(leaders, fout)
 
 
 if __name__ == '__main__':
