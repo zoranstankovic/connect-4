@@ -1,3 +1,6 @@
+import random
+
+
 def main():
     print()
     print("Welcome to Connect 4 Game")
@@ -15,9 +18,7 @@ def main():
     ]
 
     # CHOOSE INITIAL PLAYER
-    # TODO: here I can improve this with randomly choosing who is first player
-    active_player_index = 0
-    # TODO: Ask for player(s) name
+    active_player_index = random.randint(0, 1)
     players = get_players()
     tokens = ['B', 'R']
     token = None
